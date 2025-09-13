@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GODSLOVE HOSPITAL - Book Appointment</title>
+</head>
+<body>
+  <h1>GODSLOVE HOSPITAL</h1>
+  <h2>Book Appointment</h2>
+  <form id="apptForm">
+    <select id="doctor"></select><br>
+    <input type="date" id="date" required><br>
+    <button type="submit">Book</button>
+  </form>
+
+  <script>
+    const patientId = localStorage.getItem("patientId");
+    if(!patientId){
+      alert("You must login first!");
+      window.location.href = "login.html";
+    }
+
+    // Load doctors
+    async function loadDoctors(){
+      const res = await fetch("https://godslove-hospistal.onrender.com/doctors");
+      const doctors = await res.json();
+      const select = document.getElementById("doctor");
+      doctors.forEach(doc => {
+        const option = document.createElement("option");
+        option.value = doc.id;
+        option.textContent = doc.name + " - " + doc.specialty;
+        select.appendChild(option);
+      });
+    }
+    loadDoctors();
+
+    // Book appointment
+    document.getElementById("apptForm").addEventListener("submit", async function(e){
+      e.preventDefault();
+
+      const doctorId = document.getElementById("doctor").value;
+      const date = document.getElementById("date").value;
+
+      const res = await fetch("https://godslove-hospistal.onrender.com/appointments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ patientId, doctorId, date })
+      });
+
+      const data = await res.json();
+      alert("Appointment booked successfully at GODSLOVE HOSPITAL!");
+    });
+  </script>
+</body>
+</html>
