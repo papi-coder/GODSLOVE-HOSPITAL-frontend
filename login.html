@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GODSLOVE HOSPITAL - Patient Login</title>
+</head>
+<body>
+  <h1>GODSLOVE HOSPITAL</h1>
+  <h2>Login</h2>
+  <form id="loginForm">
+    <input type="email" id="email" placeholder="Email" required><br>
+    <input type="password" id="password" placeholder="Password" required><br>
+    <button type="submit">Login</button>
+  </form>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", async function(e){
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      const res = await fetch("https://godslove-hospistal.onrender.com/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      if(res.ok){
+        alert("Welcome to GODSLOVE HOSPITAL, " + data.patient.name);
+        localStorage.setItem("patientId", data.patient.id);
+        window.location.href = "appointments.html";
+      } else {
+        alert("Login failed: " + data.error);
+      }
+    });
+  </script>
+</body>
+</html>
